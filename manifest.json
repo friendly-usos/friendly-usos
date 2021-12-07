@@ -1,0 +1,22 @@
+
+{
+  "name": "friendly USOS",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "friendly USOS",
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "make USOS friendly",
+    "default_icon": "mobilny_usos_logo.png"
+  },
+  "permissions": [
+    "https://*/*",
+    "http://*/*",
+    "tabs"
+  ]
+}
