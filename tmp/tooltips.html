@@ -5,19 +5,24 @@
     <title>Tooltip testing</title>
     <style>
       /* Extra styles to mimic USOSweb */
-      html, body { margin: 0; padding: 0; }
+      html, body { display: block; min-height: 100vh; margin: 0; padding: 0; }
       body { font-family: Tahoma; font-size: 13px; }
 
-      #friendly-usos-tooltip { position: absolute; max-width: 18em; margin: 0; padding: 1em; background: #f2f2f2; border: 1px solid #D8D8D8; }
+      #friendly-usos-tooltip-layer { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; overflow: hidden; }
+
+      #friendly-usos-tooltip { display: none; position: absolute; width: 18em; margin: 0; padding: 1em; background: #f2f2f2; border: 1px solid #D8D8D8; }
       #friendly-usos-tooltip dt { display: inline; font-weight: bold; }
       #friendly-usos-tooltip dt::after { content: ' -'; }
       #friendly-usos-tooltip dd { display: inline; margin: 0; }
     </style>
+    <script src="tooltips.js"></script>
   </head>
   <body>
-    <dl id="friendly-usos-tooltip">
-      <dt>UL</dt>
-      <dd><em>Uniwersyteckie Lektoraty</em>, system rejestracji żetonowej.</dd>
-    </dl>
+    <div id="friendly-usos-tooltip-layer">
+      <dl id="friendly-usos-tooltip">
+        <dt></dt>
+        <dd></dd>
+      </dl>
+    </div>
   </body>
 </html>
