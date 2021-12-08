@@ -15,31 +15,39 @@
     html = document.getElementsByTagName('html')[0];
     tooltip = document.getElementById('friendly-usos-tooltip');
 
-    showTooltip('RW');
-
     // Force initial sizing
     htmlSize = {
       width: html.clientWidth,
       height: html.clientHeight
     };
     
-
     // Register event handlers
     window.addEventListener('resize', onWindowResize);
+    document.querySelectorAll('.friendly-usos-dict-entry').forEach(elem => {
+      let entry = elem.dataset.entry;
+      elem.addEventListener('mouseover', e => {
+        showTooltip(e.target, entry, e);
+      });
+    })
   }
 
-  function showTooltip(entry) {
+  function showTooltip(target, entry, event) {
+    // Update contents
     tooltip.getElementsByTagName('dt')[0].textContent = entry;
     tooltip.getElementsByTagName('dd')[0].innerHTML = dictionary[entry];
-    tooltip.style.display = 'block';
     tooltipSize = tooltip.getBoundingClientRect();
-    document.body.addEventListener('mousemove', onMouseMove);
 
-    setTimeout(hideTooltip, 5000);
+    // Compute styles
+    let styles = computeTooltipPosition({ x: event.clientX, y: event.clientY });
+    styles['display'] = 'block';
+    Object.assign(tooltip.style, styles);
+
+    target.addEventListener('mousemove', onMouseMove);
+    target.addEventListener('mouseout', () => { hideTooltip(target); });
   }
 
-  function hideTooltip() {
-    document.body.removeEventListener('mousemove', onMouseMove);
+  function hideTooltip(target) {
+    target.removeEventListener('mousemove', onMouseMove);
     tooltip.style.display = 'none';
   }
 
@@ -54,12 +62,7 @@
     };
   }
 
-  function onMouseMove(event) {
-    let mousePos = {
-      x: event.clientX,
-      y: event.clientY
-    }
-
+  function computeTooltipPosition(mousePos) {
     let tooltipX = 12 + mousePos.x;
     if (tooltipX + tooltipSize.width > htmlSize.width) {
       tooltipX = mousePos.x - tooltipSize.width - 4;
@@ -70,10 +73,22 @@
       tooltipY = mousePos.y - tooltipSize.height - 4;
     }
 
-    Object.assign(tooltip.style, {
+    return {
       top: tooltipY + 'px',
       left: tooltipX + 'px'
-    });
+    };
+  }
+
+  function onMouseMove(event) {
+    let mousePos = {
+      x: event.clientX,
+      y: event.clientY
+    }
+
+    Object.assign(
+      tooltip.style,
+      computeTooltipPosition(mousePos)
+    );
   }
 
   if (document.readyState === 'loading') {
