@@ -20,6 +20,19 @@ function setup_left_menu() {
     // main_panels = document.querySelector("#layout-c22a > div > div.local-home-table > div")
     // main_panels.removeChild(main_panels.children[2])
 
+function find_dropzone_parent(element) {
+
+    var el = element;
+    while(el.nodeName != "BODY") {
+        if(el.classList.contains("dropzone")) {
+            return el;
+        }
+        el = el.parentNode;
+    }
+
+    return null;
+}
+
 var dragged;
 function setup_drag() {
     panels = document.querySelector("#layout-c22a > div > div.local-home-table > div");
@@ -38,51 +51,59 @@ function setup_drag() {
     }, false);
     
     document.addEventListener("dragstart", function(event) {
-    // store a ref. on the dragged elem
-    dragged = event.target;
-    // make it half transparent
-    event.target.style.opacity = .5;
+        // store a ref. on the dragged elem
+        dragged = event.target;
+        // make it half transparent
+        event.target.style.opacity = .5;
     }, false);
     
     document.addEventListener("dragend", function(event) {
-    // reset the transparency
-    event.target.style.opacity = "";
+        // reset the transparency
+        event.target.style.opacity = "";
     }, false);
     
     /* events fired on the drop targets */
     document.addEventListener("dragover", function(event) {
-    // prevent default to allow drop
-    event.preventDefault();
+        // prevent default to allow drop
+        event.preventDefault();
+        target = find_dropzone_parent(event.target);
+        if (target) {
+            target.style.background = "purple";
+        }
     }, false);
     
     document.addEventListener("dragenter", function(event) {
-    // highlight potential drop target when the draggable element enters it
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "purple";
-    }
-    
+        // highlight potential drop target when the draggable element enters it
+        target = find_dropzone_parent(event.target);
+        if (target) {
+            target.style.background = "purple";
+        }
+        
     }, false);
     
     document.addEventListener("dragleave", function(event) {
-    // reset background of potential drop target when the draggable element leaves it
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "";
-    }
-    
+        // reset background of potential drop target when the draggable element leaves it
+        target = find_dropzone_parent(event.target);
+        if (target) {
+            target.style.background = "";
+        }
+        
     }, false);
     
     document.addEventListener("drop", function(event) {
-    // prevent default action (open as link for some elements)
-    event.preventDefault();
-    // move dragged elem to the selected drop target
-    if (event.target.className == "dropzone") {
-        event.target.style.background = "";
-        dragged.parentNode.removeChild( dragged );
-        event.target.appendChild( dragged );
-    }
-    else {
-        dragged.parentNode.removeChild( dragged );
-    }
+        // prevent default action (open as link for some elements)
+        event.preventDefault();
+        // move dragged elem to the selected drop target
+
+        target = find_dropzone_parent(event.target);
+        if (target) {
+            target.style.background = "";
+            dragged.parentNode.removeChild( dragged );
+            target.appendChild( dragged );
+        }
+        else {
+            dragged.parentNode.removeChild( dragged );
+        }
     }, false);
 }
 
