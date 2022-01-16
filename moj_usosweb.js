@@ -1,11 +1,11 @@
 function setup_left_menu() {
     menus = document.getElementsByClassName('menu');
 
-    //Remove top menu entties
-    main = menus[0];
-    main.removeChild(main.children[1]);
-    main.removeChild(main.children[3]);
-    main.removeChild(main.children[3]);
+    // //Remove top menu entties
+    // main = menus[0];
+    // main.removeChild(main.children[1]);
+    // main.removeChild(main.children[3]);
+    // main.removeChild(main.children[3]);
 
     //Remove side menu entties
     side = menus[1];
