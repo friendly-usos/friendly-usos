@@ -1,64 +1,106 @@
-(function() {
+var titles = {
+    "Rejestracja": "Nowy opis rejestracji",
+    "Sprawdziany": false,
+    "Wymiana studencka": "Nowy opis wymiany studenckiej"
+}
 
-	// just place a div at top right
-    for(j=0; j < 4; j++) {
-        icons = document.getElementsByClassName('obr')
-        for (i = 0; i < icons.length; i++) {
-            icons[i].parentElement.removeChild(icons[i])
+function deleteNode(node) {
+    node.parentNode.removeChild(node);
+}
+
+function addToDivs(node, divs) {
+   let treeWalker = document.createTreeWalker(
+        node,
+        NodeFilter.SHOW_ELEMENT,
+        { acceptNode: () => NodeFilter.FILTER_ACCEPT },
+        false
+    );
+    let moduleDescription = false;
+
+    let currentNode = treeWalker.nextNode();
+    let title = currentNode.textContent;
+    currentNode.style["font-size"] = "20px"
+    currentNode.style['color'] = '#3C6F6F'
+
+    console.log(title)
+
+    if(title in titles) {
+        if(!titles[title]) return
+
+        moduleDescription = titles[title]
+    }
+
+    while(currentNode = treeWalker.nextNode()) {
+        if(currentNode.className == "module-description" && moduleDescription) {
+            currentNode.textContent = moduleDescription;
+            break;
+        } 
+     }
+
+    let newNode = document.createElement("div");
+    newNode.className = "friendly-usos-list-elem"
+
+    while (node.childNodes.length > 0) {
+        newNode.appendChild(node.childNodes[0]);
+        newNode.style.margin = "20px"
+    }
+
+    divs.list.push(newNode)
+}
+
+function parseDocument() {
+    let site = document.getElementById('layout-main-content')
+
+    let treeWalker = document.createTreeWalker(
+        site,
+        NodeFilter.SHOW_ELEMENT,
+        { acceptNode: () => NodeFilter.FILTER_ACCEPT },
+        false
+    );
+
+    // Find all nodes to change
+    let changes = { list: [] }; // Array inside an object to pass by reference
+
+    let currentNode = treeWalker.nextNode();
+    let lastNode;
+    let moduleDescription = false
+    let divs = { list: [] }
+
+    while (currentNode) {
+
+        if(currentNode.className == "obr") {
+            changes.list.push([currentNode, deleteNode]);
         }
 
+        if(currentNode.className == "tekst") {
+            changes.list.push([currentNode, x => addToDivs(x, divs)])
+        }
+
+        lastNode = currentNode;
+        currentNode = treeWalker.nextNode();
     }
 
-    // site = document.getElementById('layout-c22a')
-    // var d = document.createElement("div")
-    // site.appendChild(d)
-    // d.id = "tooltiptext"
-    // d.innerHTML = "elo"
-    // d.style.position = "relative"
-    // d.style.display = "inline-block"
-    // d.style.visibility = "hidden"
+    changes.list.forEach(change => {
+        change[1](change[0])
+    });
 
-    texts = document.getElementsByClassName('tekst')
-    for (i = 0; i < texts.length; i++) {
-        texts[i].style['padding'] = "20px"
-        texts[i].style['vertical-align'] = 'top'
-        texts[i].getElementsByTagName('a')[0].style['font-size'] = '20px'
-        texts[i].getElementsByTagName('a')[0].style['color'] = '#3C6F6F'
-        texts[i].getElementsByClassName('module-description')[0].style['color'] = '#6f6f6f'
-        // texts[i].parentElement.removeChild(texts[i]
-    }
-    // document.addElem
+    deleteNode(document.getElementsByClassName('wrtext')[0])
+
+    site = document.getElementById('layout-c22a')
+    divs.list.forEach(div => {
+        text = div.childNodes[0]
+        console.log(div, text)
+
+        site.appendChild(div)
+    });
+}
+
+(function() {
 
     side = document.getElementById('layout-c21')
     side.parentNode.removeChild(side)
 
-    m = document.getElementsByClassName('menu')
-    menu = m[0]
-    menu.removeChild(menu.children[1])
-    menu.removeChild(menu.children[3])
-    menu.removeChild(menu.children[3])
-
-    re = document.getElementById('rejestracje_link')
-    re.title = "To jest przykładowy tooltip opisujący wszystko co się da. Tooltipy mogą być bardzo przydatne."
-
-    re.style["font-size"] = "20px"
-    re.innerHTML="Rejestracja na przedmioty"
-
-
-
-
-
-
-//     icons = document.getElementsByClassName('obr')
-//     for
-
-//   side = document.getElementById('mw-panel')
-//   side.parentElement.removeChild(side)
-
-//   content = document.getElementById('content')
-
-//   content.style.marginLeft = '0%'
-
+    parseDocument()
 
 })();
 
