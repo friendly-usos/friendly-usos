@@ -13,12 +13,12 @@ function setup_left_menu() {
     side.removeChild(side.children[6]);
     side.removeChild(side.children[5]);
 }
-    
-    // left_panel = document.querySelector("#layout-c22a > div > div.local-home-table > div > div:nth-child(1)");
-    // left_panel.removeChild(left_panel.children[0])
 
-    // main_panels = document.querySelector("#layout-c22a > div > div.local-home-table > div")
-    // main_panels.removeChild(main_panels.children[2])
+function setup_panels() {
+    right_panel = document.querySelector("#layout-c22a > div > div.local-home-table > div > div:nth-child(3)");
+    right_panel.removeChild(right_panel.children[3])
+    right_panel.removeChild(right_panel.children[2])
+}
 
 function find_dropzone_parent(element) {
 
@@ -110,5 +110,6 @@ function setup_drag() {
 
 (function() {
     setup_left_menu();
+    setup_panels();
     setup_drag();
 })();
